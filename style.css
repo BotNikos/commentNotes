@@ -1,0 +1,104 @@
+:root {
+    --main-color: #F3F4F8;
+    --second-color: #282A3A;
+    --acent-color: #00EAFF;
+}
+
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+    font-family: 'Ubuntu', sans-serif;
+    color: var(--second-color);
+}
+
+.main {
+    display: flex;
+    flex-direction: row;
+}
+
+.editor {
+    padding: 20px;
+    width: 80%;
+    height: 100vh;
+    background-color: var(--main-color);
+}
+
+.editor__title {
+    font-size: 60px;
+    font-weight: 700;
+    padding: 15px;
+}
+
+.editor__window {
+    height: 80%;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+}
+
+.editor__window__line-numbers {
+    padding: 10px;
+}
+
+.line-numbers__one-number {
+    font-size: 25px;
+    font-weight: 500;
+    text-align: right;
+    cursor: pointer;
+}
+
+.editor_windows {
+    resize: none;
+    outline: none;
+    font-size: 25px;
+    font-weight: 500;
+    padding: 10px;
+    border: none;
+
+    overflow-x: auto;
+    overflow-y: hidden;
+    height: 70px;
+}
+
+.editor-window-info-wrapper {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+
+    overflow: auto;
+    padding: 20px;
+    width: 65%;
+
+    border-radius: 15px;
+    box-shadow: rgb(0 0 0 / 35%) 0px 5px 15px;
+    height: 100%;
+    background-color: #fff;
+}
+
+.comment-window-info-wrapper {
+    width: 35%;
+    padding: 25px;
+}
+
+
+.editor__window__info {
+    width: 95%;
+}
+
+.editor__window__info:hover + .editor-window-info-wrapper {
+    border: 2px solid var(--acent-color);
+}
+
+.comment__window__info {
+    width: 100%;
+}
+
+.file-manager {
+    width: 20%;
+    height: 100vh;
+    background-color: var(--second-color);
+    padding: 10px;
+
+    box-shadow: rgba(0, 0, 0, 0.35) 0px 5px 15px;
+}
