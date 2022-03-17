@@ -3,6 +3,11 @@ const Editor = () => {
     const [lineNumber, setLineNumber] = React.useState([0]);
     const [hoverLine, setHoverLine] = React.useState(null);
     const [comments, setComments] = React.useState({});
+    const [commentViewType, setCommentViewType] = React.useState(true);
+
+    const commentTextRef = React.useRef(null);
+    const mainEditorRef = React.useRef(null);
+    
 
     const setNewComment = (event) => {
         setCommentText(event.target.value);
@@ -29,7 +34,6 @@ const Editor = () => {
 
     const enableComment = () => {
         const commentEditor = document.getElementById('comment_editor');
-        commentEditor.disabled = false;
         commentEditor.focus();
         
         if (comments[hoverLine]) 
@@ -53,9 +57,39 @@ const Editor = () => {
         event.target.parentNode.style.border = '';
     }
 
+    const changeCommentViewType = () => {
+        setCommentViewType(!commentViewType);
+
+        if (commentViewType) {
+            let joinString = '';
+
+            for (let i = 0; i < lineNumber.length; i++) {
+                joinString += (comments[i]) ? comments[i].split('\n').join(' ') : '';
+                joinString += '\n';
+            }
+
+            commentTextRef.current.style.height = mainEditorRef.current.style.height;
+            commentTextRef.current.wrap = 'off';
+            commentTextRef.current.value = joinString;
+        } else {
+            let splitedText = commentTextRef.current.value.split('\n');
+            let newComments = {}
+            splitedText.forEach((elem, index) => {
+                newComments[index] = elem;
+            });
+
+            setComments(newComments);
+            commentTextRef.current.wrap = 'soft';
+            commentTextRef.current.value = '';
+        }
+    }
+
     return (
         <section className="editor">
             <h1 className="editor__title">Заметка номер 1</h1>
+
+            <button onClick={changeCommentViewType} className="commentView">Показать комментари для {commentViewType ? 'всех строк' : 'одной строки'}</button>
+
             <div className="editor__window">
                 <div className="editor-window-info-wrapper">
                     <div className="editor__window__line-numbers">
@@ -69,6 +103,8 @@ const Editor = () => {
                     <textarea 
                         className="editor__window__info editor_windows" 
                         id="editor" 
+                        ref={mainEditorRef}
+                        wrap="off"
                         onChange={setNewComment} 
                         onFocus={parentHighlight} 
                         onBlur={disableParentHighligh} 
@@ -80,10 +116,11 @@ const Editor = () => {
                     <textarea 
                         className="comment__window__info editor_windows" 
                         id="comment_editor" 
+                        ref={commentTextRef}
+                        wrap="off"
                         onChange={editComment} 
                         onFocus={parentHighlight} 
                         onBlur={disableParentHighligh} 
-                        disabled
                     ></textarea>
                 </div>
 

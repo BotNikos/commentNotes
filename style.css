@@ -77,8 +77,14 @@
 }
 
 .comment-window-info-wrapper {
-    width: 35%;
-    padding: 25px;
+    width: 34%;
+    padding: 20px;
+    overflow: auto;
+
+    border-radius: 15px;
+    box-shadow: rgb(0 0 0 / 35%) 0px 5px 15px;
+    height: 100%;
+    background-color: #fff;
 }
 
 
