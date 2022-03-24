@@ -1,18 +1,15 @@
-const Editor = () => {
+const Editor = React.forwardRef(({fileName, forceUpdate}, ref) => {
+    const [fileId, setFileId] = React.useState('');
     const [commentText, setCommentText] = React.useState('\n');
     const [lineNumber, setLineNumber] = React.useState([0]);
     const [hoverLine, setHoverLine] = React.useState(null);
     const [comments, setComments] = React.useState({});
     const [commentViewType, setCommentViewType] = React.useState(true);
+    const [fileTitle, setFileTitle] = React.useState("Название заметки");
 
     const commentTextRef = React.useRef(null);
     const mainEditorRef = React.useRef(null);
     
-
-    const setNewComment = (event) => {
-        setCommentText(event.target.value);
-    }
-
     React.useEffect(() => {
         const wrapCharArr = commentText.match(/[\n]/g);
 
@@ -22,6 +19,48 @@ const Editor = () => {
             infoEditor.style.height = `${wrapCharArr.length * 29 + 25 + 20}px`;
         }
     }, [commentText]);
+
+    React.useEffect(async () => {
+        if (fileName) {
+            let result = await fetch(`/file/${fileName}`);
+            result = await result.json();
+
+            let string = '';
+            let comments = {};
+
+            result.strings.forEach((elem, index) => {
+                string += `${elem.content}\n`;
+                comments[index] = elem.comment;
+            });
+        
+            setFileId(result._id);
+            setFileTitle(result.name);
+            setCommentText(string);
+            setCommentViewType(true);
+            setComments(comments);
+
+            commentTextRef.current.value = '';
+        }
+    }, [fileName]);
+
+    React.useImperativeHandle(ref, () => ({
+        clear: clearEditor,
+    }));
+
+    const clearEditor = () => {
+        setFileId('');
+        setCommentText('\n');
+        setComments({});
+        setFileTitle("Название заметки");
+        setCommentViewType(true);
+        
+        commentTextRef.current.value = '';
+    }
+
+
+    const setNewComment = (event) => {
+        setCommentText(event.target.value);
+    }
 
     const showPlus = (event) => {
         setHoverLine(event.target.innerHTML);
@@ -50,7 +89,7 @@ const Editor = () => {
 
 
     const parentHighlight = (event) => {
-        event.target.parentNode.style.border = '2px solid #00EAFF';
+        event.target.parentNode.style.border = '2px solid #7AFDD6';
     }
 
     const disableParentHighligh = (event) => {
@@ -84,13 +123,66 @@ const Editor = () => {
         }
     }
 
+    const changeFileTitle = (event) => {
+        setFileTitle(event.target.value);
+    }
+
+    const saveFile = async () => {
+        const info = {
+            id: fileId,
+            fileName: fileTitle,
+            strings: commentText.split('\n'),
+            comments,
+        }
+
+        let result = await fetch('/saveFile', {
+            method: 'POST',
+            headers: {
+                'content-type': 'application/json',
+            },
+            body: JSON.stringify(info),
+        });
+
+        result = await result.json();
+        console.log(result.message);
+
+        forceUpdate();
+    }
+
+    const deleteFile = async () => {
+
+        const info = {
+            fileName: fileTitle,
+        }
+
+        let result = await fetch('/delete', {
+            method: 'POST',
+            headers: {
+                'content-type': 'application/json',
+            },
+            body: JSON.stringify(info),
+        });
+
+        result = await result.json();
+        console.log(result);
+
+        forceUpdate();
+        clearEditor();
+    }
+
     return (
         <section className="editor">
-            <h1 className="editor__title">Заметка номер 1</h1>
+            <div className="pd">
+                <input className="editor__title" value={fileTitle} onChange={changeFileTitle}></input>
+            </div>
 
-            <button onClick={changeCommentViewType} className="commentView">Показать комментари для {commentViewType ? 'всех строк' : 'одной строки'}</button>
+            <div className="pd action-buttons">
+                <button onClick={changeCommentViewType} className="comment-view pd">Показать комментари для {commentViewType ? 'всех строк' : 'одной строки'}</button>
+                <button onClick={saveFile} className="comment-view pd">Сохранить</button>
+                <button onClick={deleteFile} className="comment-view pd">Удалить</button>
+            </div>
 
-            <div className="editor__window">
+            <div className="editor__window pd">
                 <div className="editor-window-info-wrapper">
                     <div className="editor__window__line-numbers">
                         {
@@ -127,4 +219,4 @@ const Editor = () => {
             </div>
         </section>
     );
-}
+});

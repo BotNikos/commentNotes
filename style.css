@@ -1,7 +1,8 @@
 :root {
     --main-color: #F3F4F8;
     --second-color: #282A3A;
-    --acent-color: #00EAFF;
+    --acent-color: #7AFDD6;
+    --acent-color-70: rgba(122, 253, 214, .7);
 }
 
 * {
@@ -28,6 +29,18 @@
     font-size: 60px;
     font-weight: 700;
     padding: 15px;
+
+    outline: none;
+    border: none;
+
+    background-color: transparent;
+    width: 100%;
+}
+
+.editor__title:hover, .editor__title:focus {
+    background-color: #fff;
+    border-radius: 15px;
+    box-shadow: rgba(0, 0, 0, 0.35) 0px 5px 15px;
 }
 
 .editor__window {
@@ -101,6 +114,7 @@
 }
 
 .file-manager {
+    position: relative;
     width: 20%;
     height: 100vh;
     background-color: var(--second-color);
@@ -108,3 +122,63 @@
 
     box-shadow: rgba(0, 0, 0, 0.35) 0px 5px 15px;
 }
+
+.action-buttons {
+    display: flex;
+    flex-direction: row;
+}
+
+.comment-view {
+    font-size: 16px;
+    font-weight: 500;
+    border-radius: 10px;
+    border: none;
+    background-color: var(--acent-color);
+    cursor: pointer;
+
+    margin-right: 5px;
+
+    box-shadow: rgba(0, 0, 0, 0.16) 0px 1px 4px;
+}
+
+.comment-view:hover {
+    background-color: #45FCC5;
+}
+
+.file-name-title {
+    color: #fff;
+    font-size: 24px;
+    font-weight: 500;
+    cursor: pointer;
+}
+
+.file-name-title:hover {
+    text-decoration: underline; 
+}
+
+.pd {
+    padding: 10px;
+}
+
+.new-file {
+    position: absolute;
+    bottom: 10px;
+    left: calc(50% - 25px);
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    background-color: var(--acent-color-70);
+    padding: 10px;
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+
+    cursor: pointer;
+}
+
+.new-file:hover {
+    background-color: var(--acent-color);
+}
+
